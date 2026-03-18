@@ -113,7 +113,7 @@ export class ProjectsController {
     return this.projectsService.findMentorProjects(user.id);
   }
 
-  @Get('participations/:participationId')
+  @Get(':participationId/participations')
   findOneParticipation(@Param('participationId') participationId: string): Promise<ProjectParticipation> {
     return this.participationService.findOne(participationId);
   }
