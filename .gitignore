@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /uploads
-/.codex
+/codex
 
 # Logs
 logs
