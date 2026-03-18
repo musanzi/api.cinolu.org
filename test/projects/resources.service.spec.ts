@@ -88,13 +88,15 @@ describe('ResourcesService', () => {
     expect(queryBuilder.skip).toHaveBeenCalledWith(20);
   });
 
-  it('finds published phase resources and filters by tag', async () => {
+  it('finds published phase resources', async () => {
     const { service, phasesService, queryBuilder } = setup();
     phasesService.findOne.mockResolvedValue({ id: 'phase-1' });
 
-    await expect(service.findByPhase('phase-1', { tags: 'legal' } as any)).resolves.toEqual([[{ id: 'r1' }], 1]);
+    await expect(service.findByPhase('phase-1', {} as any)).resolves.toEqual([[{ id: 'r1' }], 1]);
     expect(queryBuilder.where).toHaveBeenCalledWith('resource.phaseId = :scopeId', { scopeId: 'phase-1' });
-    expect(queryBuilder.andWhere).toHaveBeenNthCalledWith(2, 'FIND_IN_SET(:tag, resource.tags) > 0', { tag: 'legal' });
+    expect(queryBuilder.andWhere).toHaveBeenCalledWith('resource.is_published = :isPublished', {
+      isPublished: true
+    });
   });
 
   it('finds one resource', async () => {

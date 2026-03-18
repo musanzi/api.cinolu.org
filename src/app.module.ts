@@ -21,6 +21,7 @@ import { EmailModule } from './shared/email/email.module';
 import { JwtModule } from './shared/jwt/jwt.module';
 import { StaticModule } from './shared/static/static.module';
 import { ConfigModule } from './shared/config/config.module';
+import { ResourcesModule } from './modules/projects/resources/resources.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ConfigModule } from './shared/config/config.module';
     EmailModule,
     JwtModule,
     StaticModule,
+    ResourcesModule,
     ConfigModule
   ],
   providers: [

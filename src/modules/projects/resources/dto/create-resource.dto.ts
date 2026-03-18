@@ -1,4 +1,4 @@
-import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ResourceCategory } from '../entities/resource.entity';
 
 export class CreateResourceDto {
@@ -12,11 +12,6 @@ export class CreateResourceDto {
 
   @IsEnum(ResourceCategory)
   category: ResourceCategory;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  tags?: string[];
 
   @IsOptional()
   @IsUUID()

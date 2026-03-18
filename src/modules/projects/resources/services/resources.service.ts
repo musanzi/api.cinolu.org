@@ -63,11 +63,7 @@ export class ResourcesService {
   async update(id: string, dto: UpdateResourceDto): Promise<Resource> {
     try {
       const resource = await this.findOne(id);
-      return await this.resourceRepository.save({
-        ...resource,
-        ...dto,
-        tags: dto.tags ?? resource.tags
-      });
+      return await this.resourceRepository.save({ ...resource, ...dto });
     } catch {
       throw new BadRequestException();
     }
@@ -96,7 +92,7 @@ export class ResourcesService {
     scopeId: string,
     queryParams: FilterResourcesDto
   ): SelectQueryBuilder<Resource> {
-    const { page = 1, category, tags } = queryParams;
+    const { page = 1, category } = queryParams;
     const skip = (+page - 1) * 20;
     const query = this.resourceRepository
       .createQueryBuilder('resource')
@@ -105,7 +101,6 @@ export class ResourcesService {
       .where(scopeCondition, { scopeId })
       .andWhere('resource.is_published = :isPublished', { isPublished: true });
     if (category) query.andWhere('resource.category = :category', { category });
-    if (tags) query.andWhere('FIND_IN_SET(:tag, resource.tags) > 0', { tag: tags });
     return query.orderBy('resource.updated_at', 'DESC').skip(skip).take(20);
   }
 }

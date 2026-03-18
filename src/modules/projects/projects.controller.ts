@@ -60,6 +60,15 @@ export class ProjectsController {
     return this.projectsService.findRecent();
   }
 
+  @Get(':projectId/participations')
+  @Public()
+  findParticipations(
+    @Param('projectId') projectId: string,
+    @Query() query: FilterParticipationsDto
+  ): Promise<[ProjectParticipation[], number]> {
+    return this.participationService.findParticipations(projectId, query);
+  }
+
   @Post('participants/move')
   @Rbac({ resource: 'projects', action: 'update' })
   moveParticipants(@Body() dto: MoveParticipantsDto): Promise<void> {
@@ -116,15 +125,6 @@ export class ProjectsController {
   @Get(':participationId/participations')
   findOneParticipation(@Param('participationId') participationId: string): Promise<ProjectParticipation> {
     return this.participationService.findOne(participationId);
-  }
-
-  @Get(':projectId/participations')
-  @Public()
-  findParticipations(
-    @Param('projectId') projectId: string,
-    @Query() query: FilterParticipationsDto
-  ): Promise<[ProjectParticipation[], number]> {
-    return this.participationService.findParticipations(projectId, query);
   }
 
   @Get(':projectId')

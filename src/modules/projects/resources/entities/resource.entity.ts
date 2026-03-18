@@ -27,9 +27,6 @@ export class Resource extends AbstractEntity {
   @Column({ type: 'enum', enum: ResourceCategory })
   category: ResourceCategory;
 
-  @Column({ type: 'simple-array', nullable: true })
-  tags?: string[];
-
   @ManyToOne(() => Project, (project) => project.resources, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn()
   project?: Project;
