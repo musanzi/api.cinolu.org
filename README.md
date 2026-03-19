@@ -1,38 +1,85 @@
 # CINOLU API
 
-Backend API for CINOLU, built with NestJS and TypeORM (MariaDB).
+Backend API for the CINOLU platform, built with **NestJS**, **TypeORM**, and **MariaDB**.
 
-## Tech Stack
+It powers the core platform features around authentication, users, programs, projects, events, ventures, mentors, blog content, notifications, highlights, stats, galleries, and static assets.
 
-- NestJS 11
-- TypeORM 0.3
-- MariaDB
-- JWT + Passport (including Google OAuth)
-- Raw text transactional emails
+## Stack
 
-## Prerequisites
+- **Framework:** NestJS 11
+- **Language:** TypeScript
+- **Database:** MariaDB
+- **ORM:** TypeORM
+- **Authentication:** Session auth, Passport, JWT, Google OAuth
+- **Email:** Nodemailer + `@nestjs-modules/mailer`
+- **File handling:** Multer
+- **Validation:** class-validator + class-transformer
 
-- Node.js 18+
-- pnpm
-- MariaDB instance
+## Core Features
 
-## Getting Started
+- Modular NestJS architecture
+- Session-based authentication with role-based access control
+- Google OAuth integration
+- JWT support for token-based flows
+- Database migrations with TypeORM
+- Static file serving
+- Email sending support
+- Global request validation
+- CORS enabled for frontend integration
+
+## Project Structure
+
+```text
+src/
+├── app.module.ts
+├── main.ts
+├── core/
+│   ├── auth/
+│   ├── helpers/
+│   ├── interceptors/
+│   └── types/
+├── modules/
+│   ├── blog/
+│   ├── events/
+│   ├── highlights/
+│   ├── mentors/
+│   ├── notifications/
+│   ├── programs/
+│   ├── projects/
+│   ├── stats/
+│   ├── subprograms/
+│   ├── users/
+│   └── ventures/
+└── shared/
+    ├── config/
+    ├── database/
+    ├── email/
+    ├── galleries/
+    ├── jwt/
+    └── static/
+```
+
+## Requirements
+
+Before running the project, make sure you have:
+
+- **Node.js** 18+
+- **pnpm**
+- **MariaDB** database
+
+## Installation
 
 ```bash
 pnpm install
-cp .env.example .env
-pnpm dev
 ```
-
-Default local URL:
-
-- `http://localhost:8000` (or your configured `PORT`)
 
 ## Environment Variables
 
 Create a `.env` file in the project root.
 
-Required variables (from `.env.example`):
+A starter template is available in `.env.example`.
+
+### Example
 
 ```env
 PORT=8000
@@ -58,93 +105,161 @@ GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/redirect
 FRONTEND_URI=http://localhost:4200
 ```
 
-Also used in the codebase:
+### Notes
 
-- `JWT_SECRET`
-- `SUPPORT_EMAIL`
+- `PORT` defaults to `3000` in code when not provided.
+- Google OAuth callback is configured through `GOOGLE_REDIRECT_URI`.
+- Session behavior depends on the session-related environment variables.
 
-## Scripts
+## Running the API
+
+### Development
 
 ```bash
-pnpm dev            # Run in watch mode
-pnpm start          # Start app
-pnpm build          # Build to dist/
-pnpm start:prod     # Run compiled app
-pnpm lint           # Lint + auto-fix
-pnpm format         # Format src/**/*.ts
+pnpm start:dev
+```
+
+### Debug mode
+
+```bash
+pnpm start:debug
+```
+
+### Production
+
+```bash
+pnpm build
+pnpm start:prod
+```
+
+### Standard start
+
+```bash
+pnpm start
+```
+
+By default, local development commonly runs on:
+
+- `http://localhost:8000`
+
+## Available Scripts
+
+```bash
+pnpm build         # Build the application
+pnpm start         # Start the app
+pnpm start:dev     # Start in watch mode
+pnpm start:debug   # Start in debug + watch mode
+pnpm start:prod    # Run compiled output from dist/
+pnpm lint          # Lint and auto-fix files
+pnpm format        # Format source files
+pnpm test          # Run tests
+pnpm test:watch    # Run tests in watch mode
+pnpm test:cov      # Generate coverage report
+pnpm test:debug    # Run tests in debug mode
 ```
 
 ## Database Migrations
 
+### Generate a migration
+
 ```bash
-pnpm db:migrate --name=<migration-name>  # Generate migration
-pnpm db:up                               # Apply migrations
-pnpm db:down                             # Revert last migration
+pnpm db:migrate --name=your_migration_name
 ```
 
-## Project Structure
+### Run migrations
+
+```bash
+pnpm db:up
+```
+
+### Revert the last migration
+
+```bash
+pnpm db:down
+```
+
+Migration files are stored in:
 
 ```text
-src/
-  core/       # Auth, guards, interceptors, shared internals
-  modules/    # Domain modules (users, projects, programs, etc.)
-  main.ts     # App bootstrap
-migrations/   # TypeORM migrations
-uploads/      # Uploaded files served statically
+src/shared/database/migrations/
 ```
 
-## Notes
+## API Modules
 
-- Global validation is enabled with Nest `ValidationPipe` (`transform: true`).
-- CORS is enabled with credentials support.
-- Static files are exposed from `/uploads`.
-- `dist/` is generated output and should not be edited manually.
+This API is organized into domain modules.
 
-## API Modules and Base Routes
+### Authentication
 
-These are controller base paths defined via `@Controller(...)`.
+- `/auth`
 
-- Auth: `/auth`
-- Users: `/users`, `/roles`
-- Projects: `/projects`, `/project-categories`, `/phases`
-- Events: `/events`, `/event-categories`
-- Programs: `/programs`, `/program-categories`, `/subprograms`
-- Mentors: `/mentors`, `/expertises`
-- Ventures: `/ventures`, `/products`
-- Blog: `/articles`, `/tags`, `/comments`
-- Media and content: `/highlights`, `/notifications`, `/stats`
+### Users and Roles
 
-## Complete API Documentation
+- `/users`
+- `/roles`
 
-For full API details (all routes, params, query/body DTOs, upload fields, and DTO field validation rules), see:
+### Programs
 
-- `docs/API.md`
+- `/programs`
+- `/program-categories`
+- `/subprograms`
 
-Regenerate it after API changes with:
+### Projects
 
-```bash
-node scripts/generate-api-docs.js
-```
+- `/projects`
+- `/project-categories`
+- `/phases`
+- `/deliverables`
+- `/resources`
 
-## Category Routes (Conflict-Free)
+### Events
 
-Category routes use dedicated top-level prefixes to avoid collisions with dynamic routes like `/programs/:programId`:
+- `/events`
+- `/event-categories`
 
-- Program categories: `/program-categories`
-- Project categories: `/project-categories`
-- Event categories: `/event-categories`
+### Mentors
 
-Each category module exposes the same endpoints:
+- `/mentors`
+- `/expertises`
 
-- `GET /<category-prefix>`
-- `GET /<category-prefix>/paginated?page=<number>&q=<string>`
-- `GET /<category-prefix>/:id`
-- `POST /<category-prefix>`
-- `PATCH /<category-prefix>/:id`
-- `DELETE /<category-prefix>/:id`
+### Ventures
 
-Params:
+- `/ventures`
+- `/products`
 
-- `id`: category UUID
-- `page` (query, optional): page number
-- `q` (query, optional): text filter by category name
+### Blog
+
+- `/articles`
+- `/comments`
+- `/tags`
+
+### Other Platform Modules
+
+- `/highlights`
+- `/notifications`
+- `/stats`
+
+## Runtime Behavior
+
+A few relevant runtime details from the current app setup:
+
+- Global validation is enabled with NestJS `ValidationPipe`
+- CORS is enabled with credentials support
+- Session middleware is enabled through `express-session`
+- Passport is initialized for authentication flows
+- Global guards are applied for session auth and RBAC
+- A global transform interceptor is registered at application level
+
+## Development Notes
+
+- The project uses **TypeORM CLI** through a pnpm script.
+- Husky is configured via the `prepare` script.
+- Static assets and galleries are handled through dedicated shared modules.
+- The codebase follows a modular structure that keeps domain logic separated and scalable.
+
+## License
+
+This project is marked as **UNLICENSED**.
+
+## Author
+
+**Wilfried M**
