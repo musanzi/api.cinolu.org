@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class ProjectRessources1773836815025 implements MigrationInterface {
-    name = 'ProjectRessources1773836815025'
+export class ProjectRessources1773902803986 implements MigrationInterface {
+    name = 'ProjectRessources1773902803986'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE \`resource\` (\`id\` uuid NOT NULL, \`created_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` datetime(6) NULL, \`title\` varchar(255) NOT NULL, \`description\` text NOT NULL, \`file\` varchar(255) NOT NULL, \`category\` enum ('guide', 'template', 'legal', 'pitch', 'financial', 'report', 'other') NOT NULL, \`projectId\` uuid NULL, \`phaseId\` uuid NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`);
