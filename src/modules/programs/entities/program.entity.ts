@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AbstractEntity } from '@/core/helpers/abstract.entity';
 import { Subprogram } from '@/modules/subprograms/entities/subprogram.entity';
 import { ProgramCategory } from '../categories/entities/category.entity';
+import { ProgramSector } from '../sectors/entities/sector.entity';
 
 @Entity()
 export class Program extends AbstractEntity {
@@ -29,4 +30,8 @@ export class Program extends AbstractEntity {
   @ManyToOne(() => ProgramCategory, (category) => category.programs)
   @JoinColumn()
   category: ProgramCategory;
+
+  @ManyToOne(() => ProgramSector, (sector) => sector.programs)
+  @JoinColumn()
+  sector: ProgramSector;
 }

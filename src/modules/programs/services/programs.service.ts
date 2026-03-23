@@ -17,7 +17,8 @@ export class ProgramsService {
     try {
       const program = this.programRepository.create({
         ...dto,
-        category: { id: dto.category }
+        category: { id: dto.category },
+        sector: { id: dto.sector }
       });
       return await this.programRepository.save(program);
     } catch {
@@ -30,7 +31,7 @@ export class ProgramsService {
       return await this.programRepository.find({
         where: { is_published: true },
         order: { updated_at: 'DESC' },
-        relations: ['category', 'subprograms']
+        relations: ['category', 'sector', 'subprograms']
       });
     } catch {
       throw new NotFoundException('Programmes introuvables');
@@ -42,7 +43,7 @@ export class ProgramsService {
       return await this.programRepository.find({
         where: { is_published: true },
         order: { updated_at: 'DESC' },
-        relations: ['category']
+        relations: ['category', 'sector']
       });
     } catch {
       throw new NotFoundException('Programmes introuvables');
@@ -53,7 +54,7 @@ export class ProgramsService {
     try {
       return await this.programRepository.findOneOrFail({
         where: { slug },
-        relations: ['category', 'subprograms']
+        relations: ['category', 'sector', 'subprograms']
       });
     } catch {
       throw new NotFoundException('Programme introuvable');
@@ -86,6 +87,7 @@ export class ProgramsService {
       const query = this.programRepository
         .createQueryBuilder('p')
         .leftJoinAndSelect('p.category', 'category')
+        .leftJoinAndSelect('p.sector', 'sector')
         .orderBy('p.updated_at', 'DESC');
       if (filter === 'published') query.andWhere('p.is_published = :isPublished', { isPublished: true });
       if (filter === 'drafts') query.andWhere('p.is_published = :isPublished', { isPublished: false });
@@ -112,7 +114,7 @@ export class ProgramsService {
     try {
       return await this.programRepository.findOneOrFail({
         where: { id },
-        relations: ['category']
+        relations: ['category', 'sector']
       });
     } catch {
       throw new NotFoundException('Programme introuvable');
@@ -125,7 +127,8 @@ export class ProgramsService {
       return await this.programRepository.save({
         ...program,
         ...dto,
-        category: dto.category ? { id: dto.category } : program.category
+        category: dto.category ? { id: dto.category } : program.category,
+        sector: dto.sector ? { id: dto.sector } : program.sector
       });
     } catch {
       throw new BadRequestException('Mise à jour impossible');

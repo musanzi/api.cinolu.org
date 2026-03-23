@@ -29,8 +29,10 @@ describe('ProgramsService', () => {
     const { service, programRepository } = setup();
     programRepository.create.mockReturnValue({ name: 'Program' });
     programRepository.save.mockResolvedValue({ id: 'p1' });
-    await expect(service.create({ name: 'Program', category: 'c1' } as any)).resolves.toEqual({ id: 'p1' });
-    expect(programRepository.create).toHaveBeenCalledWith(expect.objectContaining({ category: { id: 'c1' } }));
+    await expect(service.create({ name: 'Program', category: 'c1', sector: 's1' } as any)).resolves.toEqual({ id: 'p1' });
+    expect(programRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ category: { id: 'c1' }, sector: { id: 's1' } })
+    );
   });
 
   it('throws on create failure', async () => {
@@ -128,12 +130,15 @@ describe('ProgramsService', () => {
 
   it('updates program', async () => {
     const { service, programRepository } = setup();
-    jest.spyOn(service, 'findOne').mockResolvedValue({ id: 'p1', category: { id: 'c1' } } as any);
+    jest.spyOn(service, 'findOne').mockResolvedValue({ id: 'p1', category: { id: 'c1' }, sector: { id: 's1' } } as any);
     programRepository.save.mockResolvedValue({ id: 'p1', name: 'new' });
-    await expect(service.update('p1', { name: 'new', category: 'c2' } as any)).resolves.toEqual({
+    await expect(service.update('p1', { name: 'new', category: 'c2', sector: 's2' } as any)).resolves.toEqual({
       id: 'p1',
       name: 'new'
     });
+    expect(programRepository.save).toHaveBeenCalledWith(
+      expect.objectContaining({ category: { id: 'c2' }, sector: { id: 's2' } })
+    );
   });
 
   it('throws on update failure', async () => {

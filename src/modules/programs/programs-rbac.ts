@@ -6,8 +6,8 @@ export const PROGRAMS_RBAC_POLICY: ModuleRbacPolicy = {
   grants: [
     {
       roles: [Role.STAFF],
-      actions: ['read', 'create', 'update', 'delete'],
-      resources: ['programs', 'programCategories']
+      actions: ['manage'],
+      resources: ['programs', 'programCategories', 'programSectors']
     }
   ]
 };

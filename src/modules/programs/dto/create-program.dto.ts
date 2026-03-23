@@ -11,4 +11,7 @@ export class CreateProgramDto {
 
   @IsUUID()
   category: string;
+
+  @IsUUID()
+  sector: string;
 }
