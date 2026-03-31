@@ -2,28 +2,32 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CoachLlmService {
-  async generate(systemPrompt: string, userPrompt: string): Promise<string> {
+  async generate(prompt: string, model = 'llama3.2:3b'): Promise<string> {
     try {
-      const response = await fetch(process.env.OLLAMA_URL, {
+      const response = await fetch(`${this.getBaseUrl()}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'llama3.2:3b',
-          stream: true,
-          format: 'json',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ]
+          model,
+          prompt,
+          stream: false,
+          format: 'json'
         })
       });
-      if (!response.ok) throw new BadRequestException('Appel IA impossible');
-      const payload = (await response.json()) as { message?: { content?: string } };
-      if (!payload?.message?.content) throw new BadRequestException('Réponse IA vide');
-      return payload.message.content;
-    } catch (error) {
-      if (error instanceof BadRequestException) throw error;
-      throw new BadRequestException('Appel IA impossible');
+      if (!response.ok) {
+        throw new Error('llm_error');
+      }
+      const payload = (await response.json()) as { response?: string };
+      if (!payload.response) {
+        throw new Error('llm_empty');
+      }
+      return payload.response;
+    } catch {
+      throw new BadRequestException("Génération de la réponse impossible");
     }
+  }
+
+  private getBaseUrl(): string {
+    return process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434';
   }
 }

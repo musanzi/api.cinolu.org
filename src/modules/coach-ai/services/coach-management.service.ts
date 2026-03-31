@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateAiCoachDto } from '../dto/create-ai-coach.dto';
-import { UpdateAiCoachDto } from '../dto/update-ai-coach.dto';
 import { AiCoach } from '../entities/ai-coach.entity';
+import { CreateCoachDto } from '../dto/create-coach.dto';
+import { UpdateCoachDto } from '../dto/update-coach.dto';
 
 @Injectable()
 export class CoachManagementService {
@@ -12,14 +12,32 @@ export class CoachManagementService {
     private readonly coachRepository: Repository<AiCoach>
   ) {}
 
+  async create(dto: CreateCoachDto): Promise<AiCoach> {
+    try {
+      return await this.coachRepository.save(this.normalizePayload(dto));
+    } catch {
+      throw new BadRequestException('Création du coach impossible');
+    }
+  }
+
+  async findAll(): Promise<AiCoach[]> {
+    try {
+      return await this.coachRepository.find({
+        order: { updated_at: 'DESC' }
+      });
+    } catch {
+      throw new BadRequestException('Coachs introuvables');
+    }
+  }
+
   async findAllActive(): Promise<AiCoach[]> {
     try {
       return await this.coachRepository.find({
         where: { status: 'active' },
-        order: { created_at: 'DESC' }
+        order: { updated_at: 'DESC' }
       });
     } catch {
-      throw new BadRequestException('Coachs introuvables');
+      throw new BadRequestException('Coachs actifs introuvables');
     }
   }
 
@@ -33,45 +51,11 @@ export class CoachManagementService {
     }
   }
 
-  async create(dto: CreateAiCoachDto): Promise<AiCoach> {
-    try {
-      return await this.coachRepository.save({
-        name: dto.name,
-        profile: dto.profile,
-        role: dto.role,
-        expected_outputs: dto.expected_outputs,
-        status: dto.status || 'active',
-        model: 'llama3.2:3b'
-      });
-    } catch {
-      throw new BadRequestException('Création du coach impossible');
-    }
-  }
-
-  async findAll(): Promise<AiCoach[]> {
-    try {
-      return await this.coachRepository.find({
-        order: { created_at: 'DESC' }
-      });
-    } catch {
-      throw new BadRequestException('Coachs introuvables');
-    }
-  }
-
-  async findOne(id: string): Promise<AiCoach> {
-    return await this.findByIdOrFail(id);
-  }
-
-  async update(id: string, dto: UpdateAiCoachDto): Promise<AiCoach> {
+  async update(id: string, dto: UpdateCoachDto): Promise<AiCoach> {
     try {
       const coach = await this.findByIdOrFail(id);
-      this.coachRepository.merge(coach, {
-        name: dto.name,
-        profile: dto.profile,
-        role: dto.role,
-        expected_outputs: dto.expected_outputs,
-        status: dto.status
-      });
+      const payload = this.normalizePayload(dto);
+      this.coachRepository.merge(coach, payload);
       return await this.coachRepository.save(coach);
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
@@ -87,5 +71,14 @@ export class CoachManagementService {
       if (error instanceof NotFoundException) throw error;
       throw new BadRequestException('Suppression du coach impossible');
     }
+  }
+
+  private normalizePayload(dto: Partial<CreateCoachDto>): Partial<AiCoach> {
+    return {
+      ...dto,
+      expected_outputs: dto.expected_outputs?.map((item) => item.trim()).filter(Boolean),
+      model: dto.model || 'llama3.2:3b',
+      status: dto.status || 'active'
+    };
   }
 }

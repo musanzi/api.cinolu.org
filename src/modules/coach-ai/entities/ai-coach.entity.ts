@@ -2,7 +2,7 @@ import { AbstractEntity } from '@/core/helpers/abstract.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { CoachConversation } from './coach-conversation.entity';
 
-@Entity()
+@Entity('ai_coach')
 export class AiCoach extends AbstractEntity {
   @Column()
   name: string;

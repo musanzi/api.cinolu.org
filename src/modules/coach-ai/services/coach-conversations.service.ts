@@ -13,7 +13,10 @@ export class CoachConversationsService {
   async findByCoachAndVenture(coachId: string, ventureId: string): Promise<CoachConversation | null> {
     try {
       return await this.conversationRepository.findOne({
-        where: { coach: { id: coachId }, venture: { id: ventureId } }
+        where: {
+          coach: { id: coachId },
+          venture: { id: ventureId }
+        }
       });
     } catch {
       throw new BadRequestException('Conversation introuvable');
@@ -23,8 +26,10 @@ export class CoachConversationsService {
   async findByCoachAndVentureOrFail(coachId: string, ventureId: string): Promise<CoachConversation> {
     try {
       return await this.conversationRepository.findOneOrFail({
-        where: { coach: { id: coachId }, venture: { id: ventureId } },
-        relations: ['messages']
+        where: {
+          coach: { id: coachId },
+          venture: { id: ventureId }
+        }
       });
     } catch {
       throw new NotFoundException('Conversation introuvable');
@@ -35,10 +40,11 @@ export class CoachConversationsService {
     try {
       return await this.conversationRepository.save({
         coach: { id: coachId },
-        venture: { id: ventureId }
+        venture: { id: ventureId },
+        status: 'active'
       });
     } catch {
-      throw new BadRequestException('Conversation impossible');
+      throw new BadRequestException('Création de la conversation impossible');
     }
   }
 }

@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateCoachMessageDto {
-  @IsString()
+export class ChatWithCoachDto {
   @IsNotEmpty()
+  @IsString()
   message: string;
 }

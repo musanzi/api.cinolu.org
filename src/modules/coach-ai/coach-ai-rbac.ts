@@ -5,7 +5,7 @@ export const COACH_AI_RBAC_POLICY: ModuleRbacPolicy = {
   module: 'coach-ai',
   grants: [
     {
-      roles: [Role.STAFF, Role.ADMIN],
+      roles: [Role.ADMIN, Role.STAFF],
       actions: ['create', 'read', 'update', 'delete'],
       resources: ['coachAi']
     }

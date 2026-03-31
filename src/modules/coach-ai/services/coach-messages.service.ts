@@ -18,35 +18,35 @@ export class CoachMessagesService {
         order: { created_at: 'ASC' }
       });
     } catch {
-      throw new BadRequestException('Historique introuvable');
+      throw new BadRequestException('Messages introuvables');
     }
   }
 
-  async createUserMessage(conversationId: string, message: string): Promise<void> {
+  async createUserMessage(conversationId: string, message: string): Promise<CoachMessage> {
     try {
-      await this.messageRepository.save({
+      return await this.messageRepository.save({
+        conversation: { id: conversationId },
         role: 'user',
         output_type: 'USER_MESSAGE',
         content: message,
-        payload: { message },
-        conversation: { id: conversationId }
+        payload: { message }
       });
     } catch {
-      throw new BadRequestException('Message utilisateur impossible');
+      throw new BadRequestException("Enregistrement du message impossible");
     }
   }
 
-  async createCoachMessage(conversationId: string, output: CoachOutput): Promise<void> {
+  async createCoachMessage(conversationId: string, payload: CoachOutput): Promise<CoachMessage> {
     try {
-      await this.messageRepository.save({
+      return await this.messageRepository.save({
+        conversation: { id: conversationId },
         role: 'assistant',
-        output_type: output.type,
-        content: output.summary,
-        payload: output,
-        conversation: { id: conversationId }
+        output_type: payload.type,
+        content: payload.summary,
+        payload
       });
     } catch {
-      throw new BadRequestException('Message du coach impossible');
+      throw new BadRequestException("Enregistrement de la réponse impossible");
     }
   }
 }

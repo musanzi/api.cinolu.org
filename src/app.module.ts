@@ -31,7 +31,6 @@ import { CoachAiModule } from './modules/coach-ai/coach-ai.module';
     AuthModule,
     UsersModule,
     VenturesModule,
-    CoachAiModule,
     BlogModule,
     StatsModule,
     HighlightsModule,
@@ -46,7 +45,8 @@ import { CoachAiModule } from './modules/coach-ai/coach-ai.module';
     JwtModule,
     StaticModule,
     ResourcesModule,
-    ConfigModule
+    ConfigModule,
+    CoachAiModule
   ],
   providers: [
     { provide: APP_GUARD, useClass: SessionAuthGuard },
