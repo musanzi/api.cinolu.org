@@ -34,9 +34,7 @@ export class CoachAiService {
   async findCoachForVenture(ventureId: string, coachId: string, user: User): Promise<AiCoach> {
     try {
       await this.findOwnedVenture(ventureId, user);
-      const coach = await this.coachManagementService.findByIdOrFail(coachId);
-      this.assertCoachAvailable(coach);
-      return coach;
+      return await this.coachManagementService.findByIdOrFail(coachId);
     } catch (error) {
       if (error instanceof BadRequestException || error instanceof NotFoundException) throw error;
       throw new BadRequestException('Coach indisponible');
@@ -81,18 +79,12 @@ export class CoachAiService {
     try {
       const venture = await this.venturesService.findOne(ventureId);
       if (venture.owner?.id !== user.id) {
-        throw new BadRequestException("Cette entreprise ne vous appartient pas");
+        throw new BadRequestException('Cette entreprise ne vous appartient pas');
       }
       return venture;
     } catch (error) {
       if (error instanceof BadRequestException || error instanceof NotFoundException) throw error;
       throw new BadRequestException('Entreprise indisponible');
-    }
-  }
-
-  private assertCoachAvailable(coach: AiCoach): void {
-    if (coach.status && coach.status !== 'active') {
-      throw new BadRequestException('Coach indisponible');
     }
   }
 

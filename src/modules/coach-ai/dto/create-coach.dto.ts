@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateCoachDto {
   @IsNotEmpty()
@@ -17,12 +17,4 @@ export class CreateCoachDto {
   @ArrayNotEmpty()
   @IsString({ each: true })
   expected_outputs: string[];
-
-  @IsOptional()
-  @IsString()
-  model?: string;
-
-  @IsOptional()
-  @IsIn(['active', 'inactive'])
-  status?: string;
 }

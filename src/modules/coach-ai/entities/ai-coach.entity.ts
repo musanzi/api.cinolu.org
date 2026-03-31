@@ -16,12 +16,6 @@ export class AiCoach extends AbstractEntity {
   @Column({ type: 'simple-json' })
   expected_outputs: string[];
 
-  @Column({ default: 'llama3.2:3b' })
-  model: string;
-
-  @Column({ default: 'active' })
-  status: string;
-
   @OneToMany(() => CoachConversation, (conversation) => conversation.coach)
   conversations: CoachConversation[];
 }

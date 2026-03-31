@@ -33,7 +33,6 @@ export class CoachManagementService {
   async findAllActive(): Promise<AiCoach[]> {
     try {
       return await this.coachRepository.find({
-        where: { status: 'active' },
         order: { updated_at: 'DESC' }
       });
     } catch {
@@ -76,9 +75,7 @@ export class CoachManagementService {
   private normalizePayload(dto: Partial<CreateCoachDto>): Partial<AiCoach> {
     return {
       ...dto,
-      expected_outputs: dto.expected_outputs?.map((item) => item.trim()).filter(Boolean),
-      model: dto.model || 'llama3.2:3b',
-      status: dto.status || 'active'
+      expected_outputs: dto.expected_outputs?.map((item) => item.trim()).filter(Boolean)
     };
   }
 }
