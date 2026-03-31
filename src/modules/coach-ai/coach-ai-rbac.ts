@@ -8,11 +8,6 @@ export const COACH_AI_RBAC_POLICY: ModuleRbacPolicy = {
       roles: [Role.STAFF, Role.ADMIN],
       actions: ['create', 'read', 'update', 'delete'],
       resources: ['coachAi']
-    },
-    {
-      roles: [Role.USER],
-      actions: ['read'],
-      resources: ['ventureCoaches']
     }
   ]
 };
