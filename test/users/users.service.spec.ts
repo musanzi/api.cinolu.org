@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { UsersService } from '@/modules/users/services/users.service';
 import { parseUsersCsv } from '@/core/helpers/user-csv.helper';
-import { UserStatus } from '@/modules/users/entities/user-status.enum';
+import { UserStatus } from '@/modules/users/types/user-status.enum';
 
 jest.mock('@/core/helpers/user-csv.helper', () => ({
   parseUsersCsv: jest.fn()
@@ -128,7 +128,9 @@ describe('UsersService', () => {
     jest.spyOn(service, 'referredBy').mockResolvedValue({ id: 'u-ref' } as any);
     userRepository.save.mockResolvedValue({ id: 'u1', email: 'a@a.com' });
     jest.spyOn(service, 'findByEmail').mockResolvedValue({ id: 'u1', email: 'a@a.com' } as any);
-    await expect(service.signUp({ email: 'a@a.com', password: 'secret123', referral_code: 'abc' } as any)).resolves.toEqual({
+    await expect(
+      service.signUp({ email: 'a@a.com', password: 'secret123', referral_code: 'abc' } as any)
+    ).resolves.toEqual({
       user: { id: 'u1', email: 'a@a.com' },
       isNew: true
     });

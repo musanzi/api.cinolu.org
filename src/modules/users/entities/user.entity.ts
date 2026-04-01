@@ -11,7 +11,7 @@ import { Event } from '@/modules/events/entities/event.entity';
 import { EventParticipation } from '@/modules/events/entities/event-participation.entity';
 import { MentorProfile } from '@/modules/mentors/entities/mentor.entity';
 import { Notification } from '@/modules/notifications/entities/notification.entity';
-import { UserStatus } from './user-status.enum';
+import { UserStatus } from '../types/user-status.enum';
 
 @Entity()
 export class User extends AbstractEntity {

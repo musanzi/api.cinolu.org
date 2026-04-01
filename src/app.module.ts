@@ -22,7 +22,6 @@ import { JwtModule } from './shared/jwt/jwt.module';
 import { StaticModule } from './shared/static/static.module';
 import { ConfigModule } from './shared/config/config.module';
 import { ResourcesModule } from './modules/projects/resources/resources.module';
-import { CoachAiModule } from './modules/coach-ai/coach-ai.module';
 
 @Module({
   imports: [
@@ -45,8 +44,7 @@ import { CoachAiModule } from './modules/coach-ai/coach-ai.module';
     JwtModule,
     StaticModule,
     ResourcesModule,
-    ConfigModule,
-    CoachAiModule
+    ConfigModule
   ],
   providers: [
     { provide: APP_GUARD, useClass: SessionAuthGuard },

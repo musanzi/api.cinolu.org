@@ -24,8 +24,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@langchain/core": "^1.1.38",
-    "@langchain/langgraph": "^1.2.6",
     "@musanzi/nestjs-session-auth": "^1.0.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^11.1.7",

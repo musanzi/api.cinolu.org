@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsArray, IsDate, IsEmail, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { UserStatus } from '../entities/user-status.enum';
+import { UserStatus } from '../types/user-status.enum';
 
 export class CreateUserDto {
   @IsEmail()
