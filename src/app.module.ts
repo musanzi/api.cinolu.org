@@ -22,6 +22,7 @@ import { JwtModule } from './shared/jwt/jwt.module';
 import { StaticModule } from './shared/static/static.module';
 import { ConfigModule } from './shared/config/config.module';
 import { ResourcesModule } from './features/projects/resources/resources.module';
+import { OpportunitiesModule } from './features/opportunities/opportunities.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ResourcesModule } from './features/projects/resources/resources.module'
     ProjectsModule,
     MentorsModule,
     NotificationsModule,
+    OpportunitiesModule,
     EmailModule,
     JwtModule,
     StaticModule,
