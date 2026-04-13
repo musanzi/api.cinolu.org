@@ -22,10 +22,10 @@ export class OpportunitiesController {
     return this.opportunitiesService.findAll(query);
   }
 
-  @Get('id/:opportunityId')
+  @Get('by-slug/:slug')
   @Public()
-  findOne(@Param('opportunityId') opportunityId: string): Promise<Opportunity> {
-    return this.opportunitiesService.findOne(opportunityId);
+  findOne(@Param('slug') slug: string): Promise<Opportunity> {
+    return this.opportunitiesService.findOne(slug);
   }
 
   @Patch('id/:opportunityId')

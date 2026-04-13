@@ -32,7 +32,17 @@ export class OpportunitiesService {
     }
   }
 
-  async findOne(id: string): Promise<Opportunity> {
+  async findOne(slug: string): Promise<Opportunity> {
+    try {
+      return await this.opportunitiesRepository.findOneOrFail({
+        where: { slug }
+      });
+    } catch {
+      throw new NotFoundException('Opportunité introuvable');
+    }
+  }
+
+  async findOneById(id: string): Promise<Opportunity> {
     try {
       return await this.opportunitiesRepository.findOneOrFail({
         where: { id }
@@ -44,7 +54,7 @@ export class OpportunitiesService {
 
   async update(id: string, dto: UpdateOpportunityDto): Promise<Opportunity> {
     try {
-      const opportunity = await this.findOne(id);
+      const opportunity = await this.findOneById(id);
       return await this.opportunitiesRepository.save({
         ...opportunity,
         ...dto
@@ -56,7 +66,7 @@ export class OpportunitiesService {
 
   async setCover(id: string, cover: string): Promise<Opportunity> {
     try {
-      const opportunity = await this.findOne(id);
+      const opportunity = await this.findOneById(id);
       return await this.opportunitiesRepository.save({
         ...opportunity,
         cover
@@ -68,7 +78,7 @@ export class OpportunitiesService {
 
   async remove(id: string): Promise<void> {
     try {
-      await this.findOne(id);
+      await this.findOneById(id);
       await this.opportunitiesRepository.delete(id);
     } catch {
       throw new BadRequestException('Suppression impossible');

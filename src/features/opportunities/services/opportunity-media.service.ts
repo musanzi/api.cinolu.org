@@ -24,7 +24,7 @@ export class OpportunityMediaService {
   }
 
   private async replaceCover(id: string, filename: string): Promise<Opportunity> {
-    const opportunity = await this.opportunitiesService.findOne(id);
+    const opportunity = await this.opportunitiesService.findOneById(id);
     if (opportunity.cover) {
       await fs.unlink(`./uploads/opportunities/${opportunity.cover}`).catch(() => undefined);
     }

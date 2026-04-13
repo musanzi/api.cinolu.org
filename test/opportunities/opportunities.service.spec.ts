@@ -66,35 +66,47 @@ describe('OpportunitiesService', () => {
     await expect(service.findAll({})).rejects.toBeInstanceOf(BadRequestException);
   });
 
-  it('finds one opportunity', async () => {
+  it('finds one opportunity by slug', async () => {
     const { service, opportunitiesRepository } = setup();
-    opportunitiesRepository.findOneOrFail.mockResolvedValue({ id: 'o1' });
-    await expect(service.findOne('o1')).resolves.toEqual({ id: 'o1' });
+    opportunitiesRepository.findOneOrFail.mockResolvedValue({ id: 'o1', slug: 'appel' });
+    await expect(service.findOne('appel')).resolves.toEqual({ id: 'o1', slug: 'appel' });
+    expect(opportunitiesRepository.findOneOrFail).toHaveBeenCalledWith({
+      where: { slug: 'appel' }
+    });
   });
 
   it('throws when opportunity is missing', async () => {
     const { service, opportunitiesRepository } = setup();
     opportunitiesRepository.findOneOrFail.mockRejectedValue(new Error('bad'));
-    await expect(service.findOne('o1')).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.findOne('appel')).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('finds one opportunity by id', async () => {
+    const { service, opportunitiesRepository } = setup();
+    opportunitiesRepository.findOneOrFail.mockResolvedValue({ id: 'o1' });
+    await expect(service.findOneById('o1')).resolves.toEqual({ id: 'o1' });
+    expect(opportunitiesRepository.findOneOrFail).toHaveBeenCalledWith({
+      where: { id: 'o1' }
+    });
   });
 
   it('updates an opportunity', async () => {
     const { service, opportunitiesRepository } = setup();
-    jest.spyOn(service, 'findOne').mockResolvedValue({ id: 'o1', title: 'Old' } as any);
+    jest.spyOn(service, 'findOneById').mockResolvedValue({ id: 'o1', title: 'Old' } as any);
     opportunitiesRepository.save.mockResolvedValue({ id: 'o1', title: 'New' });
     await expect(service.update('o1', { title: 'New' })).resolves.toEqual({ id: 'o1', title: 'New' });
   });
 
   it('sets cover', async () => {
     const { service, opportunitiesRepository } = setup();
-    jest.spyOn(service, 'findOne').mockResolvedValue({ id: 'o1', cover: null } as any);
+    jest.spyOn(service, 'findOneById').mockResolvedValue({ id: 'o1', cover: null } as any);
     opportunitiesRepository.save.mockResolvedValue({ id: 'o1', cover: 'cover.png' });
     await expect(service.setCover('o1', 'cover.png')).resolves.toEqual({ id: 'o1', cover: 'cover.png' });
   });
 
   it('removes an opportunity', async () => {
     const { service, opportunitiesRepository } = setup();
-    jest.spyOn(service, 'findOne').mockResolvedValue({ id: 'o1' } as any);
+    jest.spyOn(service, 'findOneById').mockResolvedValue({ id: 'o1' } as any);
     opportunitiesRepository.delete.mockResolvedValue(undefined);
     await expect(service.remove('o1')).resolves.toBeUndefined();
     expect(opportunitiesRepository.delete).toHaveBeenCalledWith('o1');
@@ -102,7 +114,7 @@ describe('OpportunitiesService', () => {
 
   it('throws on remove failure', async () => {
     const { service } = setup();
-    jest.spyOn(service, 'findOne').mockRejectedValue(new Error('bad'));
+    jest.spyOn(service, 'findOneById').mockRejectedValue(new Error('bad'));
     await expect(service.remove('o1')).rejects.toBeInstanceOf(BadRequestException);
   });
 });
